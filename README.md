@@ -1,15 +1,19 @@
-# Renivet Python services — Phase 0
+# Renivet Python services — Windows/local Phase 0.3
 
-Fresh private FastAPI foundation. No historical code or production AI behavior imported.
+Fresh private FastAPI foundation; no legacy code or model weights imported.
 
-## Local start
+## Recommended Windows workflow
 
-`python -m venv .venv`
+From `renivet-engineering-os`, run `dev/scripts/setup-windows.ps1`; it installs Python 3.12 virtual environment under this repo. `dev/scripts/start-apps.ps1` opens a separate PowerShell window running FastAPI.
 
-`python -m pip install -e '.[dev]'`
+To run manually from `renivet-python-services`:
 
-`uvicorn app.main:app --reload --port 8000`
+```powershell
+py -3.12 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -e ".[dev]"
+.\.venv\Scripts\python.exe -m uvicorn app.main:app --reload --port 8000
+```
 
-Check `http://localhost:8000/health` and local docs at `/docs`.
+Check http://127.0.0.1:8000/health and http://127.0.0.1:8000/docs. `pytest -q` and `ruff check .` are CI checks.
 
-Private-network authentication, embedding model selection, inference SLO and consent need Security/Privacy approval before production. No AI service is authorized to mutate checkout, pricing, inventory or payment state.
+**Scope:** Health response only. Production inference remains private and must eventually use reviewed service authentication, model, privacy, memory/CPU and data-retention controls. No payment/checkout/inventory authority. Python dependencies are range-constrained, not hashed/locked yet.
