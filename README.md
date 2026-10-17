@@ -1,19 +1,17 @@
-# Renivet Python services — Windows/local Phase 0.3
+# Renivet Python services — Phase 0.4
 
-Fresh private FastAPI foundation; no legacy code or model weights imported.
+Fresh Python 3.12+ / FastAPI foundation for private **advisory** AI. No legacy code or inference behavior.
 
-## Recommended Windows workflow
+## Windows local start
 
-From `renivet-engineering-os`, run `dev/scripts/setup-windows.ps1`; it installs Python 3.12 virtual environment under this repo. `dev/scripts/start-apps.ps1` opens a separate PowerShell window running FastAPI.
-
-To run manually from `renivet-python-services`:
+After running the engineering-os PowerShell setup from the `phase0/foundation` branch:
 
 ```powershell
-py -3.12 -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -e ".[dev]"
 .\.venv\Scripts\python.exe -m uvicorn app.main:app --reload --port 8000
 ```
 
-Check http://127.0.0.1:8000/health and http://127.0.0.1:8000/docs. `pytest -q` and `ruff check .` are CI checks.
+Service health: http://127.0.0.1:8000/health. Local OpenAPI: http://127.0.0.1:8000/docs.
 
-**Scope:** Health response only. Production inference remains private and must eventually use reviewed service authentication, model, privacy, memory/CPU and data-retention controls. No payment/checkout/inventory authority. Python dependencies are range-constrained, not hashed/locked yet.
+The app factory in `app/main.py` composes API routers. Only liveness is active; versioned AI routes are unimplemented and return 404. See `docs/architecture.md` for ownership, layering and privacy constraints.
+
+CI: `ruff check .` and `pytest -q`. Python dependency lock, authenticated private-service contract tests and production hardening remain open.
