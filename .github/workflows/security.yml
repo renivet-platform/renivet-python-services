@@ -21,10 +21,10 @@ jobs:
       - name: Verify dependency resolution is committed and current
         run: uv lock --check
       - name: Export exact locked runtime dependency set for vulnerability scan
-        run: uv export --locked --no-dev --no-emit-project --no-hashes --output-file requirements-runtime.audit.txt
+        run: uv export --locked --no-dev --no-emit-project --output-file requirements-runtime.audit.txt
       - name: Reject known vulnerable locked runtime dependencies
-        run: uv tool run --from pip-audit pip-audit --requirement requirements-runtime.audit.txt --disable-pip
+        run: uv tool run --from pip-audit pip-audit --requirement requirements-runtime.audit.txt --disable-pip --no-deps
       - name: Export full locked development and runtime dependency set
-        run: uv export --locked --extra dev --no-emit-project --no-hashes --output-file requirements-all.audit.txt
+        run: uv export --locked --extra dev --no-emit-project --output-file requirements-all.audit.txt
       - name: Reject known vulnerable locked development dependencies
-        run: uv tool run --from pip-audit pip-audit --requirement requirements-all.audit.txt --disable-pip
+        run: uv tool run --from pip-audit pip-audit --requirement requirements-all.audit.txt --disable-pip --no-deps
