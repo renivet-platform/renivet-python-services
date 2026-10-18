@@ -21,7 +21,7 @@ jobs:
         run: |
           uv sync --locked --extra dev --python 3.12
           uv run --locked --extra dev ruff check .
-          uv run --locked --extra dev pytest -q
+          uv run --locked --extra dev python -m pytest -q
       - name: Emit lockfile to be committed through reviewed GitHub connector
         run: |
           echo RENIVET_UV_LOCK_BEGIN
