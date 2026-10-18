@@ -1,0 +1,23 @@
+name: Python runtime dependency audit
+on:
+  pull_request:
+  push:
+    branches: [main, phase0/foundation]
+  schedule:
+    - cron: '47 3 * * 1'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install runtime dependencies and audit tool
+        run: python -m pip install . pip-audit
+      - name: Reject known vulnerable dependencies
+        run: pip-audit
