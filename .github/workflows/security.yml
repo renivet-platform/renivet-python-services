@@ -1,4 +1,4 @@
-name: Python runtime dependency audit
+name: Python locked dependency audit
 on:
   pull_request:
   push:
@@ -11,13 +11,20 @@ permissions:
 jobs:
   audit:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
-          python-version: '3.12'
-      - name: Install runtime dependencies and audit tool
-        run: python -m pip install . pip-audit
-      - name: Reject known vulnerable dependencies
-        run: pip-audit
+          version: "0.12.15"
+          python-version: "3.12"
+      - name: Verify dependency resolution is committed and current
+        run: uv lock --check
+      - name: Export exact locked runtime dependency set for vulnerability scan
+        run: uv export --locked --no-dev --no-emit-project --no-hashes --output-file requirements-runtime.audit.txt
+      - name: Reject known vulnerable locked runtime dependencies
+        run: uv tool run --from pip-audit pip-audit --requirement requirements-runtime.audit.txt --disable-pip
+      - name: Export full locked development and runtime dependency set
+        run: uv export --locked --extra dev --no-emit-project --no-hashes --output-file requirements-all.audit.txt
+      - name: Reject known vulnerable locked development dependencies
+        run: uv tool run --from pip-audit pip-audit --requirement requirements-all.audit.txt --disable-pip
