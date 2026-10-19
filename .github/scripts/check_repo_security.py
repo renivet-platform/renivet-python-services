@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Read-only Phase 0.5 repository security gate; no network or secrets required."""
 from __future__ import annotations
 
