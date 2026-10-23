@@ -1,5 +1,5 @@
-# Staged on phase0/foundation. Dependabot reads the default (main) branch.
-# No automatic merge, local Docker pull or production deployment.
+# Dependabot proposes all versions (including majors); merging requires CI and human review.
+# Version-update cooldowns do not delay security updates.
 version: 2
 updates:
   - package-ecosystem: "uv"
@@ -7,7 +7,11 @@ updates:
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 3
+    cooldown:
+      default-days: 3
+      semver-major-days: 14
     groups:
+      # Minor and patch version updates share a PR; majors remain separate.
       minor-and-patch:
         applies-to: version-updates
         patterns:
@@ -25,3 +29,5 @@ updates:
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 3
+    cooldown:
+      default-days: 7
