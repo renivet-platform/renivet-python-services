@@ -8,6 +8,14 @@ COPY pyproject.toml uv.lock ./
 RUN uv sync --locked --no-dev --no-install-project --no-cache --python /usr/local/bin/python3.12
 
 FROM python:3.12-slim@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1
+# Patch the known Debian 13 APT/zlib CVEs in the pinned runtime base image.
+# Refuse to build if the Debian security repository cannot provide fixed versions.
+RUN set -eux; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends --only-upgrade apt libapt-pkg7.0 zlib1g; \
+    dpkg --compare-versions "$(dpkg-query -W -f='${Version}' apt)" ge 3.0.4; \
+    dpkg --compare-versions "$(dpkg-query -W -f='${Version}' zlib1g)" ge '1:1.3.dfsg+really1.3.1-1+deb13u1'; \
+    rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 COPY --from=builder /app/.venv /app/.venv
 COPY app ./app
